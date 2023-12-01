@@ -17,3 +17,7 @@ def read_input(day, transformer=str, example=False):
             return [transformer(line.strip()) for line in input_file]
     except FileNotFoundError as e:
         print(e)
+
+
+if __name__ == "__main__":
+    read_input(1, str, True)
