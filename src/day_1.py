@@ -1,4 +1,4 @@
-from utils import read_input
+from utils import read_input, sum_array
 
 number_dict = {
     "one": "o1e",
@@ -28,10 +28,6 @@ def extract_int(line):
 
     # return the first and last digit
     return f"{result_digits[0]}{result_digits[-1]}"
-
-
-def sum_array(arr):
-    return sum(int(num) for num in arr)
 
 
 numbers = read_input(1, extract_int, False)
