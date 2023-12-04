@@ -32,23 +32,12 @@ def collect_winning_card_scores(cards):
     return winning_card_scores
 
 
-def collect_winning_card_counts(deck, cards):
-    card_count = len(cards)
-    # print(f"card_count: {card_count}")
-    for card in cards:
-        if cards == deck:
-            print(f"checking: {card}: {cards[card]} = {card_count}")
-        matches = get_card_matches(cards[card][0], cards[card][1])
-        if matches > 0:
-            bonus_cards = dict(
-                (key, deck[key])
-                for key in range(card + 1, min(card + matches + 1, len(deck)))
-            )
-            # print(f"bonus cards: {bonus_cards}")
-            bonus_card_count = collect_winning_card_counts(deck, bonus_cards)
-            # print(f"bonus card count: {bonus_card_count}")
-            card_count += bonus_card_count
-    return card_count
+def collect_winning_card_counts(cards, cards_amount):
+    for index, (winners, playing) in cards.items():
+        matches = get_card_matches(winners, playing)
+        for key in range(index + 1, index + 1 + matches):
+            cards_amount[key] += cards_amount[index]
+    return cards_amount
 
 
 use_example = False
@@ -64,5 +53,5 @@ print(sum_array(winning_card_scores))
 
 # part 2
 cards_amount = {card: 1 for card in card_numbers}
-winning_card_counts = collect_winning_card_counts(cards, cards)
-print(winning_card_counts)
+winning_card_counts = collect_winning_card_counts(cards, cards_amount)
+print(sum(winning_card_counts.values()))
