@@ -15,8 +15,7 @@ def extract_seeds_pt2(section):
         # print(part)
         if (idx + 1) % 2 == 0:
             # print(section_list[idx - 1])
-            for number in range(section_list[idx - 1], section_list[idx - 1] + part):
-                seeds_list.append(number)
+            seeds_list.append([section_list[idx - 1], part])
     return seeds_list
 
 
@@ -95,12 +94,41 @@ def compare_seeds(seeds, combined_maps):
 # way easier
 def seeds_search(seeds, steps_maps):
     for step_maps in steps_maps:
-        print(step_maps)
         for idx, seed in enumerate(seeds):
             for step_line in step_maps:
                 if seed in range(step_line[1], step_line[1] + step_line[2]):
                     seeds[idx] = seed - (step_line[1] - step_line[0])
     return seeds
+
+
+# reverse search bruteforce
+def seeds_search_location(seeds, steps_maps):
+    steps_maps = list(reversed(steps_maps))
+    location = 0
+    found = False
+    while not found:
+        if location % 1000000 == 0:
+            print("{:,}".format(location))
+        # print(location)
+        seed_guess = location
+        for step_maps in steps_maps:
+            for step_line in step_maps:
+                # print(step_line)
+                # if location == 46:
+                #    print(f" location 46 guess: {seed_guess}")
+                if seed_guess in range(step_line[0], step_line[0] + step_line[2]):
+                    seed_guess = seed_guess - (step_line[0] - step_line[1])
+                    # if location == 46:
+                    # print(f" location 46 changed to guess: {seed_guess}")
+                    break
+
+        for seed in seeds:
+            # print(f"{seed[0]} range {seed[1]}")
+            if seed_guess in range(seed[0], seed[0] + seed[1]):
+                found = True
+        # print(f"location {location} -> {seed_guess}")
+        location += 1
+    return location - 1
 
 
 transformers = [
@@ -140,5 +168,6 @@ print(min(seeds))
 # first entry is seeds, rest are the maps
 input_data_pt2 = read_multisection_input(5, transformers_pt2, False)
 # print(input_data_pt2)
-# seeds_pt2 = seeds_search(input_data_pt2[0], input_data_pt2[1:])
+location_pt2 = seeds_search_location(input_data_pt2[0], input_data_pt2[1:])
+print(location_pt2)
 # print(min(seeds_pt2))
