@@ -63,5 +63,6 @@ print(search(input_data[0], input_data[1]))
 
 # part 2
 multiples = ghost_search_multiples(input_data[0], input_data[1])
+# assuming lcm works
 print(math.lcm(*multiples))
 # print(ghost_search(input_data[0], input_data[1]))
