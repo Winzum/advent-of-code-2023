@@ -1,81 +1,69 @@
 from utils import read_input, sum_array
-from itertools import product
-import functools
+from functools import cache
 
 
 def extract_data(line):
     data = line.split()
-    return [data[0], [int(n) for n in data[1].split(",")]]
+    return [data[0], tuple(map(int, data[1].split(",")))]
 
 
-def calculate_permutations(pattern, broken_groups):
-    amount = 0
-    permutations = []
-    options = {".", "#"}
-    combinations = product(options, repeat=pattern.count("?"))
-    combinations = ["".join(combination) for combination in combinations]
-    for combination in combinations:
-        permutation = pattern.replace("?", "{}").format(*combination)
-        permutation_groups = [len(perm) for perm in permutation.split(".") if perm]
-        if permutation_groups == broken_groups:
-            amount += 1
-            permutations.append(permutation)
-
-    return {amount: permutations}
-
-
-def count_permutations(pattern, broken_groups):
-    # @functools.cache
-    def inner_calculate_permutations(index, permutation_list):
-        if index == len(pattern):
-            groups = [
-                len(perm) for perm in "".join(permutation_list).split(".") if perm
-            ]
-            return 1 if groups == broken_groups else 0
-
-        count = 0
-        if pattern[index] == "?":
-            for char in {".", "#"}:
-                permutation_list[index] = char
-                count += inner_calculate_permutations(index + 1, permutation_list)
+@cache
+def count_permutations(pattern, broken_groups, group_size=0):
+    # print(pattern, broken_groups, group_size, perm)
+    if pattern == "":
+        if (len(broken_groups) == 1 and broken_groups[0] == group_size) or (
+            len(broken_groups) == 0 and group_size == 0
+        ):
+            return 1
         else:
-            permutation_list[index] = pattern[index]
-            count += inner_calculate_permutations(index + 1, permutation_list)
+            return 0
 
-        return count
+    spring = pattern[0]
+    new_pattern = pattern[1:]
 
-    permutation_list = [""] * len(pattern)
-    # print(permutation_list)
-    total_count = inner_calculate_permutations(0, permutation_list)
-    # print("Total Count:", total_count)
-    return total_count
+    if spring == ".":
+        if len(broken_groups) > 0 and group_size > 0:
+            if group_size == broken_groups[0]:
+                new_broken_groups = broken_groups[1:]
+                return count_permutations(new_pattern, new_broken_groups)
+            else:
+                return 0
+        if len(broken_groups) == 0 and group_size > 0:
+            return 0
+        return count_permutations(new_pattern, broken_groups)
+
+    if spring == "?":
+        return count_permutations(
+            "." + new_pattern, broken_groups, group_size
+        ) + count_permutations("#" + new_pattern, broken_groups, group_size)
+
+    if spring == "#":
+        if len(broken_groups) > 0 and group_size > 0:
+            if group_size > broken_groups[0]:
+                # print("# too large")
+                return 0
+        return count_permutations(new_pattern, broken_groups, group_size=group_size + 1)
 
 
-conditions = read_input(12, extract_data, True)
-# print(input_data)
+def expand_pattern(pattern, broken_groups):
+    return ((pattern + "?") * 5)[:-1], broken_groups * 5
+
+
+conditions = read_input(12, extract_data, False)
 
 # part 1
 arrangements = []
 for condition in conditions:
-    mutations = calculate_permutations(condition[0], condition[1])
+    mutations = count_permutations(*condition)
     arrangements.append(mutations)
-# print(arrangements)
-print(sum_array([key for dictionary in arrangements for key in dictionary]))
-# print(sum_array(arrangements))
+print(sum_array(arrangements))
+
 
 # part 2
 arrangements_2 = []
-# print(conditions)
 for condition in conditions:
-    mutations = count_permutations(condition[0], condition[1])
+    # mutations = count_permutations(*condition)
+    mutations = count_permutations(*expand_pattern(*condition))
+    print(mutations)
     arrangements_2.append(mutations)
 print(sum_array(arrangements_2))
-
-# for condition in conditions:
-#     print(((condition[0] + "?") * 5)[:-1], condition[1] * 5)
-#     mutations = calculate_permutations(
-#         ((condition[0] + "?") * 5)[:-1], condition[1] * 5
-#     )
-#     print(mutations)
-#     arrangements_2.append(mutations)
-# print(sum_array(arrangements_2))
