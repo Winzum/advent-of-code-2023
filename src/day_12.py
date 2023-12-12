@@ -64,6 +64,5 @@ arrangements_2 = []
 for condition in conditions:
     # mutations = count_permutations(*condition)
     mutations = count_permutations(*expand_pattern(*condition))
-    print(mutations)
     arrangements_2.append(mutations)
 print(sum_array(arrangements_2))
