@@ -2,7 +2,35 @@ import os
 
 
 def sum_array(arr):
+    """
+    Given a list with ints, returns the sum
+    """
     return sum(int(num) for num in arr)
+
+
+def section_to_grid(section):
+    """
+    Given a section of data, returns as a grid (list of lists)
+    """
+    grid = []
+    lines = section.splitlines()
+    for y in lines:
+        line = []
+        for x in y:
+            line.append(x)
+        grid.append(line)
+    return grid
+
+
+def flip_grid(grid):
+    """
+    Given a grid (list of lists) returns the grid with the x and y axis flipped
+    """
+    flipped_grid = []
+    for colnum in range(len(grid[0])):
+        col = [row[colnum] for row in grid]
+        flipped_grid.append(col)
+    return flipped_grid
 
 
 def read_input(day, transformer=str, example=False):
