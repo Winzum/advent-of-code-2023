@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 
 def sum_array(arr):
@@ -45,7 +45,9 @@ def read_input(day, transformer=str, example=False):
             filename = f"day_{day}_example.txt"
         else:
             filename = f"day_{day}.txt"
-        with open(os.path.join("..", "inputs", filename)) as input_file:
+        with open(
+            (Path(__file__).parents[1]).joinpath("inputs", filename)
+        ) as input_file:
             return [transformer(line.strip()) for line in input_file]
     except FileNotFoundError as e:
         print(e)
@@ -62,7 +64,9 @@ def read_multisection_input(day, transformers, example=False):
             filename = f"day_{day}_example.txt"
         else:
             filename = f"day_{day}.txt"
-        with open(os.path.join("..", "inputs", filename)) as input_file:
+        with open(
+            (Path(__file__).parents[1]).joinpath("inputs", filename)
+        ) as input_file:
             output = []
             sections = input_file.read().split("\n\n")
             if transformers:
@@ -76,4 +80,5 @@ def read_multisection_input(day, transformers, example=False):
 
 
 if __name__ == "__main__":
-    read_input(1, str, True)
+    print(read_input(1, str, True))
+    print((Path(__file__).parents[1]).joinpath("inputs"))
