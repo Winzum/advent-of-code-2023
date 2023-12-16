@@ -100,7 +100,6 @@ for x in range(len(input_grid[0])):
         len(simulate_energized_tiles(input_grid, (x, len(input_grid) - 1, (0, -1))))
     )
 
-# print(largest)
 print(max(largest))
 
 end_time_2 = perf_counter()
