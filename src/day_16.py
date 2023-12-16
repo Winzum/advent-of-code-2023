@@ -14,7 +14,6 @@ def simulate_energized_tiles(grid, first_beam):
         return 0 <= x < limit_x and 0 <= y < limit_y
 
     def reflect(direction, mirror):
-        # print("reflect")
         if mirror == "/":
             return (-direction[1], -direction[0])
         elif mirror == "\\":
@@ -67,21 +66,17 @@ def simulate_energized_tiles(grid, first_beam):
                         new_beams.add((new_x, new_y, direction))
 
         beams = new_beams
-        # print(beams)
 
     # first beams moves right in case of example, down in case of prod
     beams.add((first_beam))
 
-    # limit the loops
     while len(beams) > 0:
         simulate()
 
     return energized_tiles
 
 
-# input_grid = read_input(16, lambda line: [x for x in line], example)
 input_grid = read_input(16, str, False)
-# print(input_grid)
 
 # part 1
 start_time_1 = perf_counter()
